@@ -3,3 +3,6 @@ dist/
 .worktrees/
 *.tsbuildinfo
 .DS_Store
+
+# Private strategy doc — kept local, not published
+PLAN.md
