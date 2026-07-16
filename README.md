@@ -141,7 +141,10 @@ they will — collaboration needs rules that don't depend on politeness:
 1. **Use this template** (the green button on GitHub) to make your own repo.
 2. **Fill the slots.** Search for `<!-- FILL:` — they're in [`CLAUDE.md`](CLAUDE.md),
    [`docs/concept.md`](docs/concept.md), and [`docs/plan.md`](docs/plan.md). Three files get you
-   a working contract; the rest is optional depth.
+   a working contract; the rest is optional depth. Two worked examples show the target shape:
+   [`docs/concept.example.md`](docs/concept.example.md) fills the whole "why" doc, and
+   [`CLAUDE.example.md`](CLAUDE.example.md) fills each of `CLAUDE.md`'s slots — both using this
+   template itself as the subject.
 3. **Verify it's live:** `npm install && npm test`. It passes on the seeded skeleton — that's
    your proof the contract is wired up.
 4. **Make it yours.** Adjust the `CONTRACT` block in each `docs/*.test.ts` (your statuses,

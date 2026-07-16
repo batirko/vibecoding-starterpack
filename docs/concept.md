@@ -3,6 +3,9 @@
 > The *why*. Read `docs/plan.md` for *what's in scope now*, `docs/projects/` for per-feature
 > design. This file is the philosophy an agent should absorb before making product judgment
 > calls. Fill each slot below; delete the prompts as you go.
+>
+> **New here?** See [`concept.example.md`](concept.example.md) — the same sections filled in for a
+> real subject (this template itself), so you can see the target shape before you write yours.
 
 ## The problem
 

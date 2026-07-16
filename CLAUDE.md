@@ -12,7 +12,8 @@
 
 <!-- FILL: the single principle that resolves ambiguity when a decision is unclear. Make it
      operational, with a ✅ / ❌ example, so an agent can apply it without asking. This is the
-     tie-breaker every other rule defers to. Mirror it in docs/concept.md. -->
+     tie-breaker every other rule defers to. Mirror it in docs/concept.md.
+     For a filled example of this and the other FILL slots below, see CLAUDE.example.md. -->
 
 ## Document map — read what's relevant to your task
 
