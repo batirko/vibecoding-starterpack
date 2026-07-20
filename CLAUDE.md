@@ -86,6 +86,40 @@ lanes run in separate sessions. Never assume you're the only writer.
 - **Shared dev resources** (a dev server on a fixed port, shared fixtures) may already be in use
   by a concurrent session — clean up global state you seed so you don't leave it for the next.
 
+## Handoffs — write for someone without your context
+
+Every handoff leaves the session that produced it. The reader — a human returning cold, or a
+fresh agent starting from zero — has none of the context you accumulated. Write for them, not
+for yourself.
+
+### Handing back to the user
+
+**Assume the user has forgotten what this session was about.** They may be running several
+sessions in parallel, or returning hours later. This applies to any prompt for a decision, and
+to any wrap-up ("changes are PR-ready", "scoped work is done, ready to test").
+
+- **Lead with product behaviour, or the key architectural decision.** What is different now for
+  someone using the thing — not the sequence of edits that got there.
+- **Use plain descriptions.** Don't oversimplify; do drop internal jargon that isn't
+  load-bearing for the decision at hand. File paths and symbol names are supporting detail, not
+  the summary.
+- **Make the question answerable without scrolling back.** State the trade-off and give a
+  recommendation.
+- **Aim for clearer, not shorter.**
+
+### Writing prompts for other sessions
+
+**Hand over context, not a solution.** Your job is to set the receiving session up to reason
+from the actual code — not to lock it into your assumptions about the implementation.
+
+- **Give the goal, constraints, and pointers to where to look.** Avoid prescribing "do X by
+  editing Y this way" unless the approach is genuinely already decided.
+- **Separate what's known from what the session should determine itself.** Say which is which.
+- **When you write several prompts at once, every one of them states the orchestration** —
+  which other sessions are running, what each owns, which files are off-limits, and what's
+  shared. A session that doesn't know its neighbours exist will collide with them. See
+  *Working alongside parallel sessions* above for the lane rules those prompts must respect.
+
 ## Commands
 
 ```
