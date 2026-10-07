@@ -1,6 +1,8 @@
 node_modules/
 dist/
-.worktrees/
+# Claude Code session worktrees, each a full checkout of this repo
+.claude/worktrees/
+.claude/settings.local.json
 *.tsbuildinfo
 .DS_Store
 

@@ -1,138 +1,93 @@
 # CLAUDE.md
 
-> Operational guide for AI coding agents (and humans). **Read this first, every session.**
-> Product name: <!-- FILL: your product name -->.
->
-> This repo is a **vibecoding-starterpack** template: its documentation is a *tested
-> contract*. Conventions here aren't etiquette — they're enforced by `npm test`. If you
-> break one, CI turns red. Fill the `<!-- FILL: … -->` slots and delete the `_example_*`
-> files as real content lands.
+Agent guide for <!-- FILL: your product name -->. This repo follows the vibecoding-starterpack
+contract: `npm test` checks the docs as well as the code, and CI fails when a convention breaks.
+Area rules load from `.claude/rules/` when you work in matching files.
 
-## The one principle that governs everything
+## The one principle
 
-<!-- FILL: the single principle that resolves ambiguity when a decision is unclear. Make it
-     operational, with a ✅ / ❌ example, so an agent can apply it without asking. This is the
-     tie-breaker every other rule defers to. Mirror it in docs/concept.md.
-     For a filled example of this and the other FILL slots below, see CLAUDE.example.md. -->
+<!-- FILL: the single principle that settles a decision when the other rules don't. Make it
+     operational, with a ✅ / ❌ example, so an agent can apply it without asking. Mirror it in
+     docs/concept.md. CLAUDE.example.md shows this and the other slots filled. -->
 
-## Document map — read what's relevant to your task
+## Hard invariants
+
+<!-- FILL: the numbered rules no change may break, each with its reason. Examples: a privacy
+     guarantee, an architectural boundary, a product principle. This is the only copy:
+     docs/plan.md → "Standing rules across all phases" points here. -->
+
+## Where state lives
+
+This file holds rules every session needs. It doesn't record progress.
+
+- `docs/plan.md` holds the current phase, scope, and open work. Check it before you add
+  functionality.
+- Record what shipped in `docs/plan.md` and `docs/mechanics/`, never here. A status section
+  here goes stale, and the next session follows it as a rule.
+
+## Document map
 
 | File | Read it when… |
 | --- | --- |
-| `docs/concept.md` | You need the *why* — philosophy, persona, positioning, non-goals. |
-| `docs/plan.md` | You need to know what phase we're in and what's in/out of scope right now. Also the agent-routing table. |
-| `docs/projects/` | Deeper design docs for a specific feature/subsystem. Each file is a self-contained spec with status, phased plan, and per-phase todo. |
-| `docs/mechanics/` | Behavioural docs for *implemented* mechanics (what's actually built). **When you change code that alters a documented mechanic, update the matching file here in the same task.** |
-| `docs/logs/` | Append-only field logs. When you observe a rough edge during any test, **append an entry** — don't fix it inline. Logs never reach `done` and are intentionally **not** in the Projects Index. |
-| `docs/snapshots/` | Point-in-time reviews of quality, test sessions, roadmap observations. Findings feed the "Discovered" backlog. |
+| `docs/concept.md` | You need the why: philosophy, persona, positioning, non-goals. |
+| `docs/plan.md` | You need the current phase, open milestones, their routing, or the Projects Index. |
+| `docs/projects/` | You work on a specific feature or subsystem. Each file is a self-contained spec. |
+| `docs/mechanics/` | You change built behaviour. These files describe what runs, not designs. |
+| `docs/logs/` | You notice a rough edge during a test. Append an entry; don't fix it inline. |
+| `docs/snapshots/` | You want a dated review. Its findings feed the plan's backlog. |
 
-**Always check `docs/plan.md` for the current phase before adding functionality.**
+When a code change alters a documented mechanic, update its `docs/mechanics/` file in the same
+task.
 
-**Plan items carry required routing metadata.** After **any** edit to `docs/plan.md`, run the
-full `npm test`: `docs/plan.annotations.test.ts` is dynamic (one assertion per open milestone),
-so a missing or malformed annotation only surfaces there. Prose lists that aren't milestones
-belong in a blockquote, or the annotations test will read them as un-annotated milestones.
+## The docs contract
 
-### docs/projects/ conventions
-
-The heart of the contract. `docs/projects.index.test.ts` enforces all of this:
-
-- **Filenames are stable and status-free.** Name a file for what it *is*
-  (`message_generation_workflow.md`), never its status. Status lives in exactly two places:
-  the file's YAML frontmatter `status:` field (**canonical**), mirrored in the Projects Index
-  table in `docs/plan.md` (**mirror**). The test asserts folder ↔ index ↔ frontmatter agree.
-- **Index links are load-bearing — don't let a WYSIWYG editor eat them.** Each index row must
-  stay an inline link `[name](projects/name.md)`; the test rejects bare text. Edit markdown as
-  **plain text** (`.vscode/settings.json` forces it in VS Code) or in **Obsidian**; avoid
-  HTML-round-tripping editors that strip links inside table cells. Recovery:
-  `git checkout -- docs/plan.md`.
-- **`status:` is one of** `idea` · `in-progress` · `done`.
-- **Files are grouped by genre via the `kind:` field** — one of `spec` · `quality` · `infra`
-  · `research`. Each `kind` maps to one `### ` sub-header in the Projects Index; a row must sit
-  under the sub-header matching its `kind`. (To change the set, edit `CONTRACT` in
-  `docs/projects.index.test.ts` and the sub-headers in `docs/plan.md` together.)
-- **Living logs are not projects.** `docs/logs/` and `docs/snapshots/` have no status and stay
-  out of the Projects Index.
-- **Each project file contains, in order:** (1) YAML frontmatter (`status`, `kind`, `phases`
-  array, one-line `summary`); (2) `## Status`; (3) `## Phased Plan`; (4) `## Todo` (checklist,
-  scoped per phase); (5) `## Design` sections. See `docs/projects/_example_spec.md`.
-- **When you create a project file,** at minimum add its row to the Projects Index (the
-  completeness contract); ideally also add `→ see docs/projects/…` notes on the relevant
-  milestone lines in `docs/plan.md`.
-
-## Hard invariants (do not violate)
-
-<!-- FILL: the rules no change is allowed to break, numbered. These mirror the "Standing rules
-     across all phases" at the end of docs/plan.md. Examples: privacy guarantees, an
-     architectural boundary, a product principle that must never be compromised. -->
+`.claude/rules/docs-contract.md` holds the conventions for `docs/plan.md` and `docs/projects/`.
+After any edit to `docs/plan.md`, run the full `npm test`. The annotations test makes one case
+per open milestone, so a scoped run misses failures. In Claude Code, a hook runs it for you.
 
 ## Working alongside parallel sessions
 
-**Assume another agent may be editing this repo right now.** Work is often split into parallel
-lanes run in separate sessions. Never assume you're the only writer.
+Assume another agent may be editing this repo right now.
 
-- **Always work on a dedicated feature branch, never directly on `main`.** Branch at the start
-  of a task; open a PR when done. One feature per PR.
-- **Stay inside your lane's files.** Draw lanes so their **hub files don't overlap** — the big
-  single-writer bottlenecks. If your task needs to edit a hub file owned by another lane,
-  that's a signal the work isn't actually parallel-safe — flag it rather than plough in.
-  <!-- FILL: list this project's hub files (the high-churn, single-writer bottlenecks). -->
-- **Coordinate on shared low-churn files** (shared types, global styles, schema-version bumps):
-  keep edits minimal and localized; only one lane bumps a shared version at a time.
-- **Use a worktree per session** to isolate branch/dirty state (and per-origin dev state):
-  `git worktree add ../.worktrees/<branch> <branch>`. Tear it down when done.
-- **Rebase before you finalize.** `main` may have moved under you. Rebase (or merge `main`) and
-  re-run the checks before opening/merging the PR.
-- **Shared dev resources** (a dev server on a fixed port, shared fixtures) may already be in use
-  by a concurrent session — clean up global state you seed so you don't leave it for the next.
+- **Work on a feature branch, never on `main`.** Open a PR when done, one feature per PR. A
+  commit on `main` skips review and can tangle with another session's work. In Claude Code, a
+  hook blocks it.
+- **Stay inside your lane's files.** Lanes are drawn so their hub files don't overlap. If your
+  task needs a hub file another lane owns, the work isn't parallel-safe. Flag it instead.
+- **Keep edits to shared low-churn files small**, such as shared types or global styles. Only one
+  lane bumps a shared version at a time.
+- **Use a worktree per session.** Claude Code creates session worktrees under
+  `.claude/worktrees/`, which git, Vitest, and `check:fill` ignore. With another tool, use
+  `git worktree add .claude/worktrees/<branch> -b <branch>`. Remove it when you're done.
+- **Rebase before you finalize.** `main` may have moved. Rebase or merge `main`, then rerun the
+  checks.
+- **Clean up shared dev state you seed,** such as a dev server on a fixed port or fixtures.
 
-## Handoffs — write for someone without your context
+Hub files are the single-writer bottlenecks. This table is the only list; `/orchestrate` reads it.
 
-Every handoff leaves the session that produced it. The reader — a human returning cold, or a
-fresh agent starting from zero — has none of the context you accumulated. Write for them, not
-for yourself.
+<!-- FILL: one row per hub file or shared resource, with the rule for touching it, as a
+     `| File or resource | Rule |` table. docs/plan.md is a hub in every project. -->
 
-### Handing back to the user
+## Handoffs
 
-**Assume the user has forgotten what this session was about.** They may be running several
-sessions in parallel, or returning hours later. This applies to any prompt for a decision, and
-to any wrap-up ("changes are PR-ready", "scoped work is done, ready to test").
+The reader of a handoff has none of your context: a person returning cold, or a fresh agent.
 
-- **Lead with product behaviour, or the key architectural decision.** What is different now for
-  someone using the thing — not the sequence of edits that got there.
-- **Use plain descriptions.** Don't oversimplify; do drop internal jargon that isn't
-  load-bearing for the decision at hand. File paths and symbol names are supporting detail, not
-  the summary.
-- **Make the question answerable without scrolling back.** State the trade-off and give a
-  recommendation.
-- **Aim for clearer, not shorter.**
-
-### Writing prompts for other sessions
-
-**Hand over context, not a solution.** Your job is to set the receiving session up to reason
-from the actual code — not to lock it into your assumptions about the implementation.
-
-- **Give the goal, constraints, and pointers to where to look.** Avoid prescribing "do X by
-  editing Y this way" unless the approach is genuinely already decided.
-- **Separate what's known from what the session should determine itself.** Say which is which.
-- **When you write several prompts at once, every one of them states the orchestration** —
-  which other sessions are running, what each owns, which files are off-limits, and what's
-  shared. A session that doesn't know its neighbours exist will collide with them. See
-  *Working alongside parallel sessions* above for the lane rules those prompts must respect.
+- **To the user**, for a decision or a wrap-up: lead with what changed for someone using the
+  product, or the key decision and why. State the tradeoff and recommend one option. Cut the
+  edit-by-edit story; keep the reasoning the decision needs.
+- **To another session:** hand over the goal, the fixed constraints, and where to look, not a
+  finished design. Say what's decided and what the session decides itself.
+- **When you write several prompts at once,** each one states the orchestration: which sessions
+  run, what each owns, which files are off-limits, and what's shared. A session that doesn't
+  know its neighbours exist collides with them.
 
 ## Commands
 
 ```
-npm install          # install deps
-npm test             # vitest run (single pass) — includes the docs-contract tests
+npm test             # vitest run: the docs contract, the hook tests, and your tests
 npm run test:watch   # vitest watch mode
+npm run check:fill   # lists leftover FILL slots; a pre-ship gate, not part of npm test
 ```
 
-<!-- FILL: add your project's dev/build/lint/format commands here. The commands block is a
-     Phase-0 deliverable — an agent should be able to build, test, and run from this section
-     alone. -->
-
-## Status
-
-<!-- FILL: one paragraph mirroring the "Current phase" marker in docs/plan.md. Keep it short
-     and defer to docs/plan.md — don't let this drift into a second source of truth. -->
+<!-- FILL: add only the commands an agent can't guess from package.json: dev server ports,
+     commands with side effects, prerequisites such as env files. -->
