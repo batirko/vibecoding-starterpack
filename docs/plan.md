@@ -3,7 +3,7 @@
 > The roadmap **and** the agent-routing table. Check the "Current phase" marker before
 > adding functionality; every open milestone carries routing metadata (see the legend).
 > This file is under CI — `docs/plan.annotations.test.ts` fails the build if an open
-> milestone is missing its annotation. **Run `npm test` after every edit to this file.**
+> milestone is missing its annotation. The editing rules are in `.claude/rules/docs-contract.md`.
 
 **Current phase: Phase 1 — "Make the skeleton real."** <!-- FILL: replace with your current phase and a one-line status. -->
 
@@ -67,8 +67,5 @@ Milestones:
 
 ## Standing rules across all phases
 
-<!-- FILL: your project's hard invariants — the rules no phase is allowed to violate.
-     Mirror them in CLAUDE.md → "Hard invariants". -->
-
-1. Docs stay under CI: if a convention matters, it has a test.
-2. One feature per PR; branch off `main`; never commit straight to `main`.
+The hard invariants hold in every phase. They live in one place, `CLAUDE.md` → "Hard
+invariants", so this section only points there.

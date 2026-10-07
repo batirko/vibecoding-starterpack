@@ -1,18 +1,14 @@
 # AGENTS.md
 
-This repo's operational guide for AI coding agents lives in **[CLAUDE.md](CLAUDE.md)** — read
-it first, every session. It is the single source of truth regardless of which tool you use.
+This repo's guide for coding agents is **[CLAUDE.md](CLAUDE.md)**, whichever tool you use. This
+file only points there, because a second copy would drift.
 
-`AGENTS.md` exists so cross-tool agents that look for this filename are pointed to the same
-place; it is intentionally a thin pointer, not a second copy (a second copy would drift).
+Claude Code loads the rule files below only when you work in matching paths. Other tools don't,
+so read them yourself when the work fits:
 
-Start here:
+- **[.claude/rules/docs-contract.md](.claude/rules/docs-contract.md)**: the tested conventions for
+  `docs/plan.md` and `docs/projects/`. Read it before you edit either.
 
-- **[CLAUDE.md](CLAUDE.md)** — the one principle, document map, `docs/projects/` conventions,
-  hard invariants, parallel-session discipline, and commands.
-- **[docs/plan.md](docs/plan.md)** — current phase, scope, and the routing table for open work.
-- **[docs/concept.md](docs/concept.md)** — the *why*.
-
-> Prefer a real `AGENTS.md` with content? Some teams symlink it: `ln -sf CLAUDE.md AGENTS.md`.
-> This template ships a pointer instead so the two files can say slightly different things
-> (this note) without a symlink's all-or-nothing coupling.
+In Claude Code, hooks in `.claude/settings.json` enforce two rules from CLAUDE.md: no commits on
+`main`, and a full `npm test` after each `docs/plan.md` edit. Other tools don't run those hooks,
+so follow both rules yourself.

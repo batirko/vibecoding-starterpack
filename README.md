@@ -93,9 +93,10 @@ never half-filled: an open milestone without its annotation fails CI.
 > **War story: the scoped-run-passes, CI-fails gotcha.** The annotations test is *dynamic* — it
 > generates one assertion per open milestone by reading `plan.md` at test time. Edit the plan,
 > run the one test file you were touching, see green, push. CI runs the full suite against the
-> whole plan and goes red on a milestone you never looked at. The lesson is baked into
-> `CLAUDE.md`: **after any edit to `plan.md`, run the full `npm test`** — a partial run can't see
-> a contract whose cases are generated from the very file you changed.
+> whole plan and goes red on a milestone you never looked at. A partial run can't see a contract
+> whose cases are generated from the very file you changed. So the template ships a Claude Code
+> hook that runs the full `npm test` after every edit to `plan.md` or a project file, and shows a
+> failure to the agent at once.
 
 ### 3. A genre taxonomy for docs
 
@@ -124,8 +125,17 @@ they will — collaboration needs rules that don't depend on politeness:
 - **Lanes own hub files.** Draw the work so the high-churn, single-writer files don't overlap
   between concurrent tasks. If your task needs a file another lane owns, that's the signal the
   work isn't actually parallel-safe — flag it instead of ploughing in.
-- **A worktree per session** isolates branch and dirty state (and per-origin dev state).
+- **A worktree per session** isolates branch and dirty state (and per-origin dev state). Claude
+  Code creates them under `.claude/worktrees/`, and the template's `.gitignore`, Vitest config,
+  and `check:fill` already ignore that folder.
 - **Rebase before you finalize;** `main` moved under you while you worked.
+
+Prose alone doesn't hold the branch rule, so the template enforces it twice:
+
+- **A Claude Code hook** in [`.claude/settings.json`](.claude/settings.json) refuses `git commit`
+  while the checkout is on `main`. Its tests run in `npm test`.
+- **Branch protection** covers everyone else. We recommend you turn it on for `main` in your
+  GitHub repo's settings: require a pull request and the CI check before merging.
 
 > **War story: the collision that forced worktrees.** Two sessions, one clone, shared working
 > tree. Session A checks out its branch; session B, mid-task, now has A's branch and its own
@@ -144,7 +154,8 @@ they will — collaboration needs rules that don't depend on politeness:
    a working contract; the rest is optional depth. Two worked examples show the target shape:
    [`docs/concept.example.md`](docs/concept.example.md) fills the whole "why" doc, and
    [`CLAUDE.example.md`](CLAUDE.example.md) fills each of `CLAUDE.md`'s slots — both using this
-   template itself as the subject.
+   template itself as the subject. `CLAUDE.example.md` also says how to keep `CLAUDE.md` healthy
+   as the project grows.
 3. **Verify it's live:** `npm install && npm test`. It passes on the seeded skeleton — that's
    your proof the contract is wired up.
 4. **Make it yours.** Adjust the `CONTRACT` block in each `docs/*.test.ts` (your statuses,
@@ -163,7 +174,8 @@ minutes. If you hit friction, that's a bug in this template — open an issue.
 - **Not a skills or plugin bundle.** Those are a treadmill someone else is already running. This
   is a structure and four conventions, nothing to keep up to date.
 - **Not a generator or CLI.** It's a template repo. No build step you don't control, no magic.
-- **Not framework lock-in.** The only dependency is Vitest, and only to run the two doc tests.
+- **Not framework lock-in.** The only dependency is Vitest, and only to run the doc tests and the
+  hook tests.
   There's no React, no Vite app, no opinion about what you build on top.
 
 ## The reference implementation

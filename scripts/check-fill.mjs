@@ -39,7 +39,10 @@ function hasRealSlot(line) {
 }
 
 /** Directories never worth scanning. */
-const SKIP_DIRS = new Set([".git", "node_modules", ".worktrees"]);
+const SKIP_DIRS = new Set([".git", "node_modules"]);
+
+/** Paths never worth scanning: Claude Code session worktrees are full checkouts of this repo. */
+const SKIP_PATHS = new Set([join(".claude", "worktrees")]);
 
 /**
  * Files exempt from the check. `*.example.md` are deliberately-filled reference twins;
@@ -51,8 +54,8 @@ const isExempt = (rel) => rel.endsWith(".example.md");
 function markdownFiles(dir) {
   const out = [];
   for (const entry of readdirSync(dir)) {
-    if (SKIP_DIRS.has(entry)) continue;
     const abs = join(dir, entry);
+    if (SKIP_DIRS.has(entry) || SKIP_PATHS.has(relative(root, abs))) continue;
     if (statSync(abs).isDirectory()) out.push(...markdownFiles(abs));
     else if (entry.endsWith(".md")) out.push(abs);
   }

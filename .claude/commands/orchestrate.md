@@ -56,13 +56,9 @@ not a hard ceiling — but if you're going past it, say why in your report.
 Draw the boundary at the **hub files** — the single-writer bottlenecks. Two lanes that write the
 same hub file are not parallel, however different their goals sound.
 
-<!-- FILL: list this repo's hub files and shared resources as a table, one row each — the file
-     or resource, and the rule for touching it. Start from the hub-file list in CLAUDE.md →
-     "Working alongside parallel sessions", but be more specific here: name the actual paths
-     (a generated dataset, a rendered site directory, a shared API token, a `CONTRACT` block in
-     a docs test) and the exact rule for each — who owns it, whether others may read it, whether
-     it's one-writer-at-a-time or prepend-only. `docs/plan.md` is a hub in every project; keep
-     that row and add the rest. -->
+The hub files and shared resources, with the rule for each, are in `CLAUDE.md` → "Working
+alongside parallel sessions". That table is the only copy, so if a round finds a new hub, add it
+there.
 
 Then check each lane against the others for these, and write the answer down:
 
@@ -77,16 +73,15 @@ not an oversight.
 
 ## 4. Write one prompt per lane
 
-Follow `CLAUDE.md` → "Writing prompts for other sessions". Hand over context, not a solution.
-Each prompt contains:
+Follow `CLAUDE.md` → "Handoffs". Hand over context, not a solution. Each prompt contains:
 
 - **The goal**, in terms of what changes for a reader or for the project's answer.
 - **What's already known and decided**, with pointers to the file that holds it. Include the
   constraints that are genuinely fixed — invariants, contract tests, prior decisions.
 - **What the session determines itself.** Say which is which, explicitly.
 - **Scope**: in, out, and the priority order inside it. Name what's out of bounds by path.
-- **The orchestration picture** — the table of all lanes, who owns what, the shared-file rules
-  above, and the coordination points that involve this lane.
+- **The orchestration picture** — the table of all lanes, who owns what, the hub-file rules
+  from `CLAUDE.md`, and the coordination points that involve this lane.
 - **The working rules**: branch off `main`, worktree per session, one feature per PR, `npm test`
   after any `docs/plan.md` edit, rebase before finalizing.
 
